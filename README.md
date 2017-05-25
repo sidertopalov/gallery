@@ -1,1 +1,1 @@
-# gallery
+# PHP and MySQL Gallery
