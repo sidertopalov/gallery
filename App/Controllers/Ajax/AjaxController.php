@@ -3,9 +3,6 @@
 use Yee\Managers\Controller\Controller;
 use Yee\Managers\CacheManager;
 use App\Models\Ajax\AjaxModel;
-use App\Models\MyAccount\MyAccountModel;
-use App\Models\Article\ArticleModel;
-use App\Models\Category\CategoryModel;
 
 class AjaxController extends Controller
 {
@@ -19,8 +16,6 @@ class AjaxController extends Controller
 
         /** @var Yee\Yee $yee */
         $app = $this->getYee();
-
-        $baseUrl = \Yee\Yee::getDefaultSettings();
 
         $loginEmail   = $app->request->post('loginEmail');
         $loginPass    = $app->request->post('loginPass');
@@ -38,7 +33,7 @@ class AjaxController extends Controller
 
             $data = array(
                 "title"         => "AjaxControllerFail",
-                'redirectTo'    => "/account",
+                'redirectTo'    => "/",
                 'message'       => $error,
                 'error'         => false,
                 );
@@ -51,7 +46,7 @@ class AjaxController extends Controller
 
             $data = array(
                 "title"         => "AjaxControllerSucc",
-                'redirectTo'    => "/account",
+                'redirectTo'    => "/",
                 'message'       => "Hello, $loginEmail",
                 'success'       => true,
                 'error'         => false,

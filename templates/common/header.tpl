@@ -90,7 +90,7 @@
 						<div class="col-sm-12 columns text-center">
 							<ul class="menu">
 								<li> <a href="/"><i class="icon icon_house"></i> Начало</a></li>
-								<li> <a href="#">Промоции</a></li>						
+								<li> <a href="/promotions">Промоции</a></li>						
 								<li> <a href="#">Уреди и Мивки</a></li>
 
 								{% if session.isLogged == true %}

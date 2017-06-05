@@ -20,7 +20,7 @@ class CategoriesController extends Controller {
         $app = $this->getYee();
 
         if ( !isset($_SESSION['isLogged']) ) {
-            $app->redirect('/login');
+            $app->redirect('/');
         } else {
             $javascript = array(
                 '/js/categoryAdd.js',
@@ -63,12 +63,17 @@ class CategoriesController extends Controller {
 
         $file = $_FILES["img"];
 
-        if($fileHelper->fileSizeAllowed($file)) {
-            $errors[] = "Maximum file size is 2mb.<br>";
-        }
+        if ($file['name'] != "") {
+            
+            if($fileHelper->fileSizeAllowed($file)) {
+                $errors[] = "Maximum file size is 2mb.<br>";
+            }
 
-        if (!$fileHelper->isAllowedExt($file)) {
-            $errors[] = "Wrong file format!<br>";
+            if (!$fileHelper->isAllowedExt($file)) {
+                $errors[] = "Wrong file format!<br>";
+            }
+        } else {
+            $errors[] = "No attached file!<br>";
         }
 
         if (isset($errors[0]) === false) {
@@ -200,12 +205,12 @@ class CategoriesController extends Controller {
             $app->redirect('/');
         }
 
-        $categoriesModel = new CategoriesModel();
-        $categoryProperty = $categoriesModel->getCategoryByName($name);
-
         if ($categoryProperty == null) {
             $app->redirect('/admin/category/list');
         }
+
+        $categoriesModel = new CategoriesModel();
+        $categoryProperty = $categoriesModel->getCategoryByName($name);
 
         // $javascript = array(
         //     '/js/categoryDelete.js',

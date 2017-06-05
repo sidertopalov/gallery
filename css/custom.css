@@ -6,3 +6,12 @@ img.fixedSize{
 	min-width: 200px;
 	min-height: 250px;
 }
+
+.price-old {
+	color: red;
+	text-decoration: line-through;
+}
+
+.price-new {
+	color: green;
+}

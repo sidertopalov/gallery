@@ -1,36 +1,96 @@
-<?php 
+<?php
 
 use Yee\Managers\Controller\Controller;
 use Yee\Managers\CacheManager;
-use App\Models\Article\ArticleModel;
-use App\Models\Categories\CategoriesModel;
+use App\Models\Promotions\PromotionsModel;
 use App\Libraries\File\File;
 
-class ArticleController extends Controller {
+
+class PromotionsController extends Controller {  
+
+	 /**
+     * @Route('/promotions')
+     * @Name('login.index')
+     */
+    public function indexAction()
+    {
+        /** @var Yee\Yee $yee */
+        $app = $this->getYee();
+
+        $curPage = $app->request()->get("page");
+
+        $limit = 12;
+        if ($curPage) {
+        	$start = ($curPage-1) * $limit;
+        } else {
+        	$start = 0;
+        }
+
+        $promotionsModel = new PromotionsModel();
+        $result = $promotionsModel->getPromotions();
+        $promPerPage = $promotionsModel->getPromotionsWithLimit($start, $limit);
+
+        $countResult = count($result);
+        
+        $pages = ceil($countResult / $limit);
+
+        $data = array(
+        	"curPage"		=> $curPage ? $curPage : 0,
+        	"pages"			=> $pages,
+        	"promotions"	=> $promPerPage,
+    	);
+
+        $app->render('/pages/promotions.tpl', $data);
+    }
+
+     /**
+     * @Route('/promotions/product/view/:id')
+     * @Name('login.index')
+     */
+    public function viewProductByIdtAction($productId)
+    {
+        /** @var Yee\Yee $yee */
+        $app = $this->getYee();
+
+        $promotionsModel = new PromotionsModel();
+        $productDetails = $promotionsModel->getPromotionById($productId);
+        $productPhotos = json_decode($productDetails['photos'],true);
+
+        $javascript = [
+            "/js/lightbox.js",
+        ];
+        $css = [
+            "/css/lightbox.css",
+            "/css/custom.css",
+        ];
+
+        $data = [
+            "product"      => $productDetails,
+            "photos"       => $productPhotos,
+            "javascript"   => $javascript,
+            "css"          => $css,
+        ];
+
+        $app->render('/pages/promotionsView.tpl', $data);
+    }
 
     /**
-     * @Route('/admin/article')
-     * @Name('article.index')
+     * @Route('/admin/promotions')
+     * @Name('promotions.index')
      */
-    public function indexAction() {
+    public function promotionAction() {
 
         /** @var Yee\Yee $yee */
         $app = $this->getYee();
 
         if (isset($_SESSION['isLogged']) === true) {
 
-            
-            $categoriesModel = new CategoriesModel();
-
-            $categories = $categoriesModel->getCategories();
-
             $data = array(
-                'title'             => 'Add Article',
-                'categoryDetails'   => $categories,
-                'javascript'        => ['/js/addArticle.js'],
+                'title'             => 'Create Promotion',
+                'javascript'        => ['/js/promotionCreate.js'],
             );
 
-            $app->render('pages/articleAdd.tpl', $data);
+            $app->render('pages/promotionsCreate.tpl', $data);
      
         } else {
 
@@ -39,19 +99,20 @@ class ArticleController extends Controller {
     }
 
     /**
-     * @Route('/admin/article/create')
-     * @Name('article.index')
+     * @Route('/admin/promotions/create')
+     * @Name('promotions.create')
      * @Method('post')
      */
-    public function createArticleAction() {
+    public function promotionCreateAction() {
 
         /** @var Yee\Yee $yee */
         $app = $this->getYee();
 
         $title = $app->request()->post("title");
         $descrip = $app->request()->post("description");
-        $price = $app->request()->post("price");
-        $categoryName = $app->request()->post("categoryName");
+        $oldPrice = $app->request()->post("oldPrice");
+        $newPrice = $app->request()->post("newPrice");
+        $categoryName = "promotions";
         
         $avatarImage = $_FILES['avatar'];
 
@@ -97,12 +158,11 @@ class ArticleController extends Controller {
             $errors[] = "Аватар снимката е задължителна!<br>";
         }
 
-        if (empty($title) || empty($descrip) || empty($price)) {
+        if (empty($title) || empty($descrip) || empty($oldPrice) || empty($newPrice)) {
             $errors[] = "Всички полета са задължителни!<br>";
         }
 
-
-        $articleModel = new ArticleModel();
+        $promotionModel = new PromotionsModel();
 
         if (isset($errors[0]) === false) {
             
@@ -115,7 +175,7 @@ class ArticleController extends Controller {
             
             $avatar = $fileHelper->saveFile($avatarImage, $targetDir);
             $photoNames[] = $avatar;
-            $articleModel->addArticle($title, $avatar, json_encode($photoNames), $price, $categoryName, $descrip);
+            $promotionModel->addPromotion($title, $avatar, json_encode($photoNames), $oldPrice, $newPrice, $categoryName, $descrip);
 
             $data = array(
                 'message'       => "Succesfully updated!",
@@ -133,4 +193,5 @@ class ArticleController extends Controller {
 
         echo json_encode($data);
     }
+
 }

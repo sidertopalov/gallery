@@ -16,10 +16,6 @@ class File
 	{
 		$errors = [];
 
-		// if ($file['name'] == "") {
-		// 	return "No attached file";
-		// }
-
         $uploadfileName = $file['name'];
         $fileName = explode('.', $uploadfileName);
         $fileExt = strtolower($fileName[1]);
@@ -104,10 +100,15 @@ class File
         $imageWidth = $imageSize[0];
         $imageHeight = $imageSize[1];
 
-        $black = imagecolorallocate($im, 0, 0, 0);
+        $black = imagecolorallocate($im, 255, 0, 0);
 
-        // Draw the text using font size 12
-        imagettftext($im, 12, 0, 20, 20, $black, $font_file, $watterText);
+        // Calculate font-size where 100px = 3 font-size
+        $fontSize = $imageWidth / 100 * 3;
+        $x = 20;
+        $y = $fontSize + 20;
+        
+        // Draw the text using font size depend on image width
+        imagettftext($im, 12, 0, $x, $y, $black, $font_file, $watterText);
 
         if ($fileExt == "jpg" || $fileExt == "jpeg") {
             imagejpeg($im, $targetFileDir);

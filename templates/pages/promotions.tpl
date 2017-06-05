@@ -6,41 +6,47 @@
 	<div class="container">
 
 		<div class="text-center">
-				<h2>Галерия {{categoryName}}</h2>
+				<h2>Промоции</h2>
 		</div>
 		<hr style="border-color: #e74c3c;">
 		<br>
 
 		<div class="row text-center">
-			{% if articles is not empty %}
+			{% if promotions is not empty %}
 				<ul class="pagination">
 				{% for page in 1..pages %}
 					{% if page == curPage or (curPage == 0 and page == 1) %}
 						<li class="active">
-							<a href="/gallery/{{categoryName}}?page={{page}}">{{page}}</a>
+							<a href="/promotions?page={{page}}">{{page}}</a>
 						</li>
 					{% else %}
-						<li><a href="/gallery/{{categoryName}}?page={{page}}">{{page}}</a></li>
+						<li><a href="/promotions?page={{page}}">{{page}}</a></li>
 					{% endif %}
 					
 				{% endfor %}
 				</ul>
 			{% endif %}
 		</div>
+
 		<section>
 			<div class="row text-center">
-				{% if articles is not empty %}
-					{% for article in articles %}
+				{% if promotions is not empty %}
+					{% for promotion in promotions %}
 						<div class=" col-md-3">
 							<div class="thumbnail">
-							<!-- <div>
-								<p>{{article.title}}</p>
-							</div> -->
-							  <a href="/gallery/product/view/{{article.id}}">
-							    <img class="fixedSize img-responsive" src="/{{article.avatar}}" alt="Lights">
+							<div>
+								<b>{{promotion.title}}</b>
+							</div>
+							  <a href="/promotions/product/view/{{promotion.id}}">
+							    <img class="fixedSize img-responsive" src="/{{promotion.avatar}}" alt="Lights">
 
-								<div class="caption">
-									<p style="color: green;"><b>Цена: {{article.price}}лв</b></p>
+								<div class="price">
+									<span class="price-new">
+											<b>{{promotion.new_price}},00 лв</b>
+									</span><br>
+									<span class="price-old">
+											<b>{{promotion.old_price}},00 лв</b>
+									</span>
 								</div>
 							  </a>
 							</div>
@@ -53,15 +59,15 @@
 		</section>
 
 		<div class="row text-center">
-			{% if articles is not empty %}
+			{% if promotions is not empty %}
 				<ul class="pagination">
 				{% for page in 1..pages %}
 					{% if page == curPage or (curPage == 0 and page == 1) %}
 						<li class="active">
-							<a href="/gallery/{{categoryName}}?page={{page}}">{{page}}</a>
+							<a href="/promotions?page={{page}}">{{page}}</a>
 						</li>
 					{% else %}
-						<li><a href="/gallery/{{categoryName}}?page={{page}}">{{page}}</a></li>
+						<li><a href="/promotions?page={{page}}">{{page}}</a></li>
 					{% endif %}
 					
 				{% endfor %}
@@ -70,7 +76,6 @@
 		</div>
 
 	</div>
-
 
 </section>
 
